@@ -1,0 +1,1 @@
+<img src="{{ asset('images/logo.webp') }}" alt="{{ config('app.name', 'ANGKUT') }}" {{ $attributes->merge(['class' => 'h-10 w-auto object-contain transition-transform duration-200 hover:scale-105']) }}>

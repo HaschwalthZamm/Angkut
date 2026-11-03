@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .text-stroke-sm {
+        -webkit-text-stroke: 1.5px #1E3011;
+    }
+    .text-stroke-md {
+        -webkit-text-stroke: 2.5px #1E3011;
+    }
+    .text-stroke-lg {
+        -webkit-text-stroke: 3.5px #1E3011;
+    }
+}
