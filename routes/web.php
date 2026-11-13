@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Public\LandingController;
 use App\Http\Controllers\Public\PublicReportController;
 use App\Http\Controllers\Public\TrackingController;
+use App\Models\Region;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', LandingController::class)->name('home');
-
+// Route utama mengarah ke Landing Page & kirim data kecamatan
+Route::get('/', function () {
+    $regions = Region::where('is_active', true)->orderBy('name')->get();
+    return view('public.Landing', compact('regions'));
+})->name('home');
 
 // Guest bisa lapor tanpa login
 Route::post('/lapor', [PublicReportController::class, 'store'])

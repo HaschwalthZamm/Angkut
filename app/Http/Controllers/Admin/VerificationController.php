@@ -6,85 +6,52 @@ use App\Enums\ReportStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Report;
 use App\Services\ReportStatusService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
     public function __construct(private ReportStatusService $statusService) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         $reports = Report::query()
             ->where('status', ReportStatus::Pending)
             ->with(['region', 'category', 'user'])
             ->orderByDesc('created_at')
-            ->paginate(20);
+            ->paginate(10);
 
-        return response()->json([
-            'success' => true,
-            'data'    => $reports,
-        ]);
+        return view('admin.verifications.index', compact('reports'));
     }
 
-    public function show(Report $report): JsonResponse
+    public function show(Report $report)
     {
-        $report->load([
-            'region',
-            'category',
-            'user',
-            'images',
-            'statusHistories',
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'data'    => $report,
-        ]);
+        $report->load(['region', 'category', 'user', 'images', 'statusHistories']);
+        return response()->json(['success' => true, 'data' => $report]);
     }
 
-    public function verify(Request $request, Report $report): JsonResponse
+    public function verify(Request $request, Report $report)
     {
-        $validated = $request->validate([
-            'note' => 'nullable|string|max:500',
-        ]);
+        $validated = $request->validate(['note' => 'nullable|string|max:500']);
 
-        $report = $this->statusService->verify(
+        $this->statusService->verify(
             $report,
             $request->user(),
-            $validated['note'] ?? null,
+            $validated['note'] ?? null
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Laporan berhasil diverifikasi.',
-            'data'    => [
-                'id'     => $report->id,
-                'status' => $report->status->value,
-            ],
-        ]);
+        return back()->with('success', 'Laporan berhasil diverifikasi!');
     }
 
-    public function reject(Request $request, Report $report): JsonResponse
+    public function reject(Request $request, Report $report)
     {
-        $validated = $request->validate([
-            'reason' => 'required|string|max:1000',
-        ]);
+        $validated = $request->validate(['reason' => 'required|string|max:1000']);
 
-        $report = $this->statusService->reject(
+        $this->statusService->reject(
             $report,
             $request->user(),
-            $validated['reason'],
+            $validated['reason']
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Laporan ditolak.',
-            'data'    => [
-                'id'              => $report->id,
-                'status'          => $report->status->value,
-                'rejected_reason' => $report->rejected_reason,
-            ],
-        ]);
+        return back()->with('success', 'Laporan berhasil ditolak.');
     }
 }

@@ -53,11 +53,20 @@
             <!-- ACTION BUTTONS -->
             <div class="flex items-center gap-3">
                 @auth
+                    <!-- Tombol Dashboard (Dinamis sesuai Role) -->
                     <a href="{{ route('dashboard') }}" 
                         class="bg-angkut-medium text-white font-fun font-bold px-4 py-2 border-3 border-angkut-deep rounded-xl shadow-cartoon transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 text-sm flex items-center gap-2">
-                        <span>Dashboard</span>
+                        <span>{{ auth()->user()->isAdmin() ? 'Admin Panel' : 'Dashboard' }}</span>
                         <span class="w-2 h-2 bg-angkut-light rounded-full border border-angkut-deep"></span>
                     </a>
+                    
+                    <!-- Tombol Logout (Baru ditambahkan) -->
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-fun font-bold px-4 py-2 border-3 border-angkut-deep rounded-xl shadow-cartoon transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 text-sm">
+                            Keluar
+                        </button>
+                    </form>
                 @else
                     <a href="{{ route('login') }}" 
                         class="bg-white hover:bg-slate-100 text-angkut-deep font-fun font-bold px-4 py-2 border-3 border-angkut-deep rounded-xl shadow-cartoon transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 text-sm">
