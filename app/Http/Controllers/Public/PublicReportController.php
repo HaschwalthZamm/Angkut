@@ -3,17 +3,31 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Region;
+use App\Models\ReportCategory;
 use App\Services\ReportService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PublicReportController extends Controller
 {
     public function __construct(private ReportService $reportService) {}
 
-    public function store(Request $request): JsonResponse
+    public function create()
     {
-        $validated = $request->validate([
+        $regions = Region::where('is_active', true)->orderBy('name')->get();
+        $categories = ReportCategory::where('is_active', true)->orderBy('name')->get();
+
+        return view('reports.create', [
+            'regions' => $regions,
+            'categories' => $categories,
+            'isGuest' => true,
+            'actionUrl' => route('public.report.store'),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $rules = [
             'region_id'          => 'required|exists:regions,id',
             'report_category_id' => 'required|exists:report_categories,id',
             'title'              => 'required|string|max:150',
@@ -22,22 +36,23 @@ class PublicReportController extends Controller
             'longitude'          => 'required|numeric|between:-180,180',
             'address'            => 'nullable|string|max:255',
             'priority'           => 'nullable|in:low,medium,high,urgent',
-            'reporter_name'      => 'required|string|max:100',
-            'reporter_phone'     => 'required|string|max:20',
-        ]);
+            'images.*'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ];
+
+        $rules['reporter_name'] = 'required|string|max:100';
+        $rules['reporter_phone'] = 'required|string|max:20';
+
+        $validated = $request->validate($rules);
+
+        if ($request->hasFile('images')) {
+            $validated['images'] = $request->file('images');
+        }
 
         $report = $this->reportService->createReport($validated, null);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Laporan berhasil dibuat. Simpan kode tracking untuk cek status.',
-            'data'    => [
-                'tracking_code' => $report->tracking_code,
-                'reporter_phone' => $report->reporter_phone,
-                'status'        => $report->status->value,
-                'title'         => $report->title,
-                'sla_deadline_at' => $report->sla_deadline_at?->toIso8601String(),
-            ],
-        ], 201);
+        // PERBAIKAN: Hanya bawa parameter phone
+        return redirect()->route('public.tracking.create', [
+            'phone' => $report->reporter_phone
+        ])->with('success', 'Laporan berhasil dibuat!');
     }
 }

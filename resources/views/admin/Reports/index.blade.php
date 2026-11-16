@@ -27,7 +27,10 @@
                     <tr class="hover:bg-slate-50 transition">
                         <td class="px-6 py-4 font-mono text-sm font-bold">{{ $report->tracking_code }}</td>
                         <td class="px-6 py-4">
-                            <p class="font-bold text-angkut-deep">{{ $report->title }}</p>
+                            <!-- Judul laporan dibuat menjadi link ke halaman detail -->
+                            <a href="{{ route('admin.reports.show', $report->id) }}" class="font-bold text-angkut-medium hover:text-angkut-dark hover:underline transition-colors">
+                                {{ $report->title }}
+                            </a>
                             <p class="text-xs text-slate-500">{{ $report->category->name }}</p>
                         </td>
                         <td class="px-6 py-4 text-sm font-semibold">{{ $report->region->name }}</td>

@@ -5,30 +5,40 @@ namespace App\Http\Controllers\Masyarakat;
 use App\Enums\ReportStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Report;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class FeedbackController extends Controller
 {
-    public function store(Request $request, Report $report): RedirectResponse
+    public function store(Request $request, Report $report)
     {
-        $this->authorize('view', $report);
-        abort_unless($report->status === ReportStatus::Completed, 422);
+        // 1. Pastikan laporan ini milik user yang login
+        if ($report->user_id !== $request->user()->id) {
+            abort(403, 'Anda tidak berhak memberi feedback pada laporan ini.');
+        }
 
-        $data = $request->validate([
-            'rating' => ['required', 'integer', 'min:1', 'max:5'],
-            'comment' => ['nullable', 'string', 'max:1000'],
+        // 2. Pastikan laporan sudah selesai (completed)
+        if ($report->status !== ReportStatus::Completed) {
+            return back()->withErrors(['feedback' => 'Anda hanya bisa memberi feedback jika laporan sudah selesai.']);
+        }
+
+        // 3. Pastikan belum pernah memberi feedback
+        if ($report->feedback) {
+            return back()->withErrors(['feedback' => 'Anda sudah memberikan feedback untuk laporan ini.']);
+        }
+
+        // 4. Validasi input
+        $validated = $request->validate([
+            'rating' => 'required|integer|between:1,5',
+            'comment' => 'nullable|string|max:1000',
         ]);
 
-        $report->feedback()->updateOrCreate(
-            ['report_id' => $report->id],
-            [
-                'user_id' => $request->user()->id,
-                'rating' => $data['rating'],
-                'comment' => $data['comment'] ?? null,
-            ],
-        );
+        // 5. Simpan feedback
+        $report->feedback()->create([
+            'user_id' => $request->user()->id,
+            'rating'  => $validated['rating'],
+            'comment' => $validated['comment'] ?? null,
+        ]);
 
-        return back()->with('status', 'Terima kasih atas penilaiannya.');
+        return back()->with('success', 'Terima kasih atas penilaian Anda!');
     }
 }

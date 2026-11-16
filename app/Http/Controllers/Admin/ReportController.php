@@ -5,12 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\ReportStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Report;
+use App\Models\Team;
+use App\Services\AssignmentService;
 use App\Services\ReportStatusService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ReportController extends Controller
 {
-    public function __construct(private ReportStatusService $statusService) {}
+    public function __construct(
+        private ReportStatusService $statusService,
+        private AssignmentService $assignmentService,
+    ) {}
 
     public function index(Request $request)
     {
@@ -43,17 +49,23 @@ class ReportController extends Controller
         $report->load([
             'region', 'category', 'user', 'verifier', 'images',
             'statusHistories.changer', 'activeAssignment.team.leader',
-            'assignments.team', 'comments.user', 'feedback.user',
+            'assignments.team', 'feedback',
         ]);
 
-        return response()->json(['success' => true, 'data' => $report]);
+        // Ambil tim yang tersedia di wilayah laporan ini (jika statusnya verified)
+        $availableTeams = collect();
+        if ($report->status === ReportStatus::Verified) {
+            $availableTeams = $this->assignmentService->availableTeamsForRegion($report->region_id);
+        }
+
+        return view('admin.reports.show', compact('report', 'availableTeams'));
     }
 
     public function close(Request $request, Report $report)
     {
         $validated = $request->validate(['note' => 'nullable|string|max:500']);
 
-        $report = $this->statusService->close(
+        $this->statusService->close(
             $report,
             $request->user(),
             $validated['note'] ?? null,

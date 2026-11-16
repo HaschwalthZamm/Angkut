@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Report;
 use App\Services\AssignmentService;
 use App\Services\ReportStatusService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -18,15 +17,14 @@ class TaskController extends Controller
         private ReportStatusService $statusService,
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         $team = $request->user()->activeTeam();
 
         if (!$team) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Anda belum tergabung dalam tim manapun.',
-                'data'    => [],
+            return view('petugas.tasks.index', [
+                'team' => null,
+                'reports' => collect(),
             ]);
         }
 
@@ -34,107 +32,72 @@ class TaskController extends Controller
             ->whereHas('activeAssignment', fn ($q) => $q->where('team_id', $team->id)->where('is_active', true))
             ->whereIn('status', [ReportStatus::Assigned, ReportStatus::OnProgress])
             ->with(['region', 'category', 'activeAssignment'])
-            ->orderByDesc('created_at')
-            ->paginate(20);
+            ->orderBy('sla_deadline_at', 'asc')
+            ->paginate(10);
 
-        return response()->json([
-            'success' => true,
-            'team'    => [
-                'id'   => $team->id,
-                'name' => $team->name,
-            ],
-            'data'    => $reports,
-        ]);
+        return view('petugas.tasks.index', compact('team', 'reports'));
     }
 
-    public function show(Request $request, Report $report): JsonResponse
+    public function show(Request $request, Report $report)
     {
         $this->assertMyTeamTask($request, $report);
 
         $report->load([
-            'region',
-            'category',
-            'images',
-            'activeAssignment.team',
-            'statusHistories',
+            'region', 'category', 'images', 'activeAssignment.team', 'statusHistories',
         ]);
 
-        return response()->json([
-            'success' => true,
-            'data'    => $report,
-        ]);
+        return view('petugas.tasks.show', compact('report'));
     }
 
-    public function accept(Request $request, Report $report): JsonResponse
+    public function accept(Request $request, Report $report)
     {
         $this->assertMyTeamTask($request, $report);
-
         $assignment = $report->activeAssignment;
 
         if (!$assignment) {
-            throw ValidationException::withMessages([
-                'report' => 'Laporan ini tidak punya assignment aktif.',
+            throw ValidationException::withMessages(['report' => 'Laporan ini tidak punya assignment aktif.']);
+        }
+
+        $this->assignmentService->accept($assignment, $request->user());
+        return back()->with('success', 'Tugas berhasil diterima. Silakan menuju lokasi.');
+    }
+
+    public function start(Request $request, Report $report)
+    {
+        $this->assertMyTeamTask($request, $report);
+
+        $this->statusService->start($report, $request->user());
+        return back()->with('success', 'Status diubah ke: Sedang Ditangani.');
+    }
+
+    public function complete(Request $request, Report $report)
+    {
+        $this->assertMyTeamTask($request, $report);
+
+        $validated = $request->validate([
+            'note' => 'nullable|string|max:500',
+            'evidence_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        // 1. Upload foto bukti
+        if ($request->hasFile('evidence_image')) {
+            $path = $request->file('evidence_image')->store('reports/' . $report->id . '/evidence', 'public');
+            $report->images()->create([
+                'type' => 'evidence',
+                'path' => $path,
+                'uploaded_by' => $request->user()->id,
+                'caption' => 'Bukti penanganan oleh tim ' . $request->user()->activeTeam()?->name,
             ]);
         }
 
-        $assignment = $this->assignmentService->accept($assignment, $request->user());
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Tugas diterima.',
-            'data'    => [
-                'assignment_id' => $assignment->id,
-                'accepted_at'   => $assignment->accepted_at?->toIso8601String(),
-            ],
-        ]);
-    }
-
-    public function start(Request $request, Report $report): JsonResponse
-    {
-        $this->assertMyTeamTask($request, $report);
-
-        $validated = $request->validate([
-            'note' => 'nullable|string|max:500',
-        ]);
-
-        $report = $this->statusService->start(
+        // 2. Ubah status ke Completed
+        $this->statusService->complete(
             $report,
             $request->user(),
-            $validated['note'] ?? null,
+            $validated['note'] ?? 'Sampah telah diangkut oleh tim.'
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Status diubah ke sedang ditangani.',
-            'data'    => [
-                'id'     => $report->id,
-                'status' => $report->status->value,
-            ],
-        ]);
-    }
-
-    public function complete(Request $request, Report $report): JsonResponse
-    {
-        $this->assertMyTeamTask($request, $report);
-
-        $validated = $request->validate([
-            'note' => 'nullable|string|max:500',
-        ]);
-
-        $report = $this->statusService->complete(
-            $report,
-            $request->user(),
-            $validated['note'] ?? null,
-        );
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Laporan selesai ditangani.',
-            'data'    => [
-                'id'     => $report->id,
-                'status' => $report->status->value,
-            ],
-        ]);
+        return redirect()->route('petugas.tasks.index')->with('success', 'Tugas berhasil diselesaikan! Terima kasih.');
     }
 
     private function assertMyTeamTask(Request $request, Report $report): void
@@ -142,17 +105,13 @@ class TaskController extends Controller
         $team = $request->user()->activeTeam();
 
         if (!$team) {
-            throw ValidationException::withMessages([
-                'team' => 'Anda belum tergabung dalam tim.',
-            ]);
+            throw ValidationException::withMessages(['team' => 'Anda belum tergabung dalam tim.']);
         }
 
         $active = $report->activeAssignment;
 
         if (!$active || $active->team_id !== $team->id || !$active->is_active) {
-            throw ValidationException::withMessages([
-                'report' => 'Laporan ini bukan tugas tim Anda.',
-            ]);
+            throw ValidationException::withMessages(['report' => 'Laporan ini bukan tugas tim Anda.']);
         }
     }
 }

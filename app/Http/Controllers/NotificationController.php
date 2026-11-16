@@ -2,29 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppNotification;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class NotificationController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
-        $notifications = $request->user()
-            ->appNotifications()
-            ->latest()
-            ->paginate(20);
+        $notifications = $request->user()->notifications()->take(10)->get();
+        $unreadCount = $request->user()->unreadNotifications()->count();
 
-        return view('notifications.index', compact('notifications'));
+        return response()->json([
+            'notifications' => $notifications,
+            'unread_count' => $unreadCount,
+        ]);
     }
 
-    public function markRead(Request $request, AppNotification $notification): RedirectResponse
+    public function markAsRead(Request $request, $id)
     {
-        abort_unless($notification->user_id === $request->user()->id, 403);
+        $notification = $request->user()->notifications()->find($id);
+        
+        if ($notification) {
+            $notification->markAsRead();
+        }
 
-        $notification->update(['read_at' => now()]);
+        return response()->json(['success' => true]);
+    }
 
-        return back();
+    public function markAllAsRead(Request $request)
+    {
+        $request->user()->unreadNotifications->markAsRead();
+        return response()->json(['success' => true]);
     }
 }

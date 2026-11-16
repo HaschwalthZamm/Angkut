@@ -10,6 +10,9 @@ class ReportFeedback extends Model
 {
     use HasFactory;
 
+    // PERBAIKAN: Beri tahu Laravel nama tabel yang benar
+    protected $table = 'report_feedbacks';
+
     protected $fillable = [
         'report_id',
         'user_id',

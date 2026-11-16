@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 03 Nov 2026 pada 08.59
+-- Waktu pembuatan: 16 Nov 2026 pada 05.41
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -47,7 +47,8 @@ CREATE TABLE `activity_log` (
 --
 
 INSERT INTO `activity_log` (`id`, `log_name`, `description`, `subject_type`, `subject_id`, `event`, `causer_type`, `causer_id`, `properties`, `batch_uuid`, `created_at`, `updated_at`) VALUES
-(1, 'default', 'Laporan ANGKUT-2611-0001 dibuat', 'App\\Models\\Report', 7, NULL, NULL, NULL, '{\"tracking_code\":\"ANGKUT-2611-0001\",\"status\":\"pending\"}', NULL, '2026-11-02 22:50:44', '2026-11-02 22:50:44');
+(1, 'default', 'Laporan ANGKUT-2611-0001 dibuat', 'App\\Models\\Report', 7, NULL, NULL, NULL, '{\"tracking_code\":\"ANGKUT-2611-0001\",\"status\":\"pending\"}', NULL, '2026-11-02 22:50:44', '2026-11-02 22:50:44'),
+(2, 'default', 'Laporan ANGKUT-2611-0001 diverifikasi', 'App\\Models\\Report', 7, NULL, 'App\\Models\\User', 1, '{\"tracking_code\":\"ANGKUT-2611-0001\",\"status\":\"verified\"}', NULL, '2026-11-10 20:07:33', '2026-11-10 20:07:33');
 
 -- --------------------------------------------------------
 
@@ -88,6 +89,13 @@ CREATE TABLE `assignments` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `active_report_id` bigint(20) UNSIGNED GENERATED ALWAYS AS (case when `is_active` = 1 then `report_id` else NULL end) STORED
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `assignments`
+--
+
+INSERT INTO `assignments` (`id`, `report_id`, `team_id`, `assigned_by`, `assigned_at`, `accepted_at`, `started_at`, `completed_at`, `is_active`, `note`, `created_at`, `updated_at`) VALUES
+(2, 7, 1, 1, '2026-11-10 20:08:09', NULL, NULL, NULL, 1, NULL, '2026-11-10 20:08:09', '2026-11-10 20:08:09');
 
 -- --------------------------------------------------------
 
@@ -248,8 +256,12 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `type`, `notifiable_type`, `notifiable_id`, `data`, `read_at`, `created_at`, `updated_at`) VALUES
+('1e0e5e7d-4aa0-4c06-9185-98e1ec94d2b8', 'App\\Notifications\\ReportAssignedNotification', 'App\\Models\\User', 3, '{\"type\":\"report_assigned\",\"report_id\":7,\"tracking_code\":\"ANGKUT-2611-0001\",\"title\":\"Sampah menumpuk di pasar\",\"team_id\":1,\"team_name\":\"Tim Kebersihan Ilir Barat I\",\"priority\":\"high\",\"address\":null,\"latitude\":-2.99,\"longitude\":104.75,\"message\":\"Tugas baru untuk tim Tim Kebersihan Ilir Barat I: \\\"Sampah menumpuk di pasar\\\"\",\"url\":\"\\/petugas\\/tasks\\/7\"}', NULL, '2026-11-10 20:08:09', '2026-11-10 20:08:09'),
+('4acaa50c-66ed-4828-a33e-8ed845143d00', 'App\\Notifications\\ReportAssignedNotification', 'App\\Models\\User', 2, '{\"type\":\"report_assigned\",\"report_id\":7,\"tracking_code\":\"ANGKUT-2611-0001\",\"title\":\"Sampah menumpuk di pasar\",\"team_id\":1,\"team_name\":\"Tim Kebersihan Ilir Barat I\",\"priority\":\"high\",\"address\":null,\"latitude\":-2.99,\"longitude\":104.75,\"message\":\"Tugas baru untuk tim Tim Kebersihan Ilir Barat I: \\\"Sampah menumpuk di pasar\\\"\",\"url\":\"\\/petugas\\/tasks\\/7\"}', NULL, '2026-11-10 20:08:09', '2026-11-10 20:08:09'),
 ('7f1bf77f-8150-41c2-bae3-e74d86f4c7b2', 'App\\Notifications\\NewReportForAdminNotification', 'App\\Models\\User', 1, '{\"type\":\"report_created\",\"report_id\":7,\"tracking_code\":\"ANGKUT-2611-0001\",\"title\":\"Sampah menumpuk di pasar\",\"priority\":\"high\",\"region\":\"Ilir Barat I\",\"message\":\"Laporan baru masuk: \\\"Sampah menumpuk di pasar\\\" (ANGKUT-2611-0001)\",\"url\":\"\\/admin\\/reports\\/7\"}', NULL, '2026-11-02 22:50:44', '2026-11-02 22:50:44'),
-('89277b5a-4dc8-4630-957a-c8b2fc1f4c83', 'App\\Notifications\\NewReportForAdminNotification', 'App\\Models\\User', 1, '{\"type\":\"report_created\",\"report_id\":7,\"tracking_code\":\"ANGKUT-2611-0001\",\"title\":\"Sampah menumpuk di pasar\",\"priority\":\"high\",\"region\":\"Ilir Barat I\",\"message\":\"Laporan baru masuk: \\\"Sampah menumpuk di pasar\\\" (ANGKUT-2611-0001)\",\"url\":\"\\/admin\\/reports\\/7\"}', NULL, '2026-11-02 22:50:43', '2026-11-02 22:50:43');
+('89277b5a-4dc8-4630-957a-c8b2fc1f4c83', 'App\\Notifications\\NewReportForAdminNotification', 'App\\Models\\User', 1, '{\"type\":\"report_created\",\"report_id\":7,\"tracking_code\":\"ANGKUT-2611-0001\",\"title\":\"Sampah menumpuk di pasar\",\"priority\":\"high\",\"region\":\"Ilir Barat I\",\"message\":\"Laporan baru masuk: \\\"Sampah menumpuk di pasar\\\" (ANGKUT-2611-0001)\",\"url\":\"\\/admin\\/reports\\/7\"}', NULL, '2026-11-02 22:50:43', '2026-11-02 22:50:43'),
+('b7b161b0-3fec-4e96-af1d-a1bed3a7d70d', 'App\\Notifications\\ReportVerifiedNotification', 'App\\Models\\User', 4, '{\"type\":\"report_verified\",\"report_id\":7,\"tracking_code\":\"ANGKUT-2611-0001\",\"title\":\"Sampah menumpuk di pasar\",\"message\":\"Laporan Anda \\\"Sampah menumpuk di pasar\\\" telah diverifikasi.\",\"url\":\"\\/laporan\\/ANGKUT-2611-0001\"}', NULL, '2026-11-10 20:07:33', '2026-11-10 20:07:33'),
+('e89f3906-a33f-4ea5-b9d4-95037457261e', 'App\\Notifications\\ReportVerifiedNotification', 'App\\Models\\User', 4, '{\"type\":\"report_verified\",\"report_id\":7,\"tracking_code\":\"ANGKUT-2611-0001\",\"title\":\"Sampah menumpuk di pasar\",\"message\":\"Laporan Anda \\\"Sampah menumpuk di pasar\\\" telah diverifikasi.\",\"url\":\"\\/laporan\\/ANGKUT-2611-0001\"}', NULL, '2026-11-10 20:07:33', '2026-11-10 20:07:33');
 
 -- --------------------------------------------------------
 
@@ -412,7 +424,7 @@ CREATE TABLE `reports` (
 --
 
 INSERT INTO `reports` (`id`, `tracking_code`, `user_id`, `reporter_name`, `reporter_phone`, `region_id`, `report_category_id`, `title`, `description`, `address`, `latitude`, `longitude`, `priority`, `status`, `rejected_reason`, `verified_by`, `verified_at`, `completed_at`, `sla_deadline_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(7, 'ANGKUT-2611-0001', 4, 'Siti Warga', '081200000004', 1, 1, 'Sampah menumpuk di pasar', 'Test notifikasi', NULL, -2.99000000, 104.75000000, 'high', 'pending', NULL, NULL, NULL, NULL, '2026-11-03 10:50:41', '2026-11-02 22:50:41', '2026-11-02 22:50:41', NULL);
+(7, 'ANGKUT-2611-0001', 4, 'Siti Warga', '081200000004', 1, 1, 'Sampah menumpuk di pasar', 'Test notifikasi', NULL, -2.99000000, 104.75000000, 'high', 'assigned', NULL, 1, '2026-11-10 20:07:30', NULL, '2026-11-03 10:50:41', '2026-11-02 22:50:41', '2026-11-10 20:08:09', NULL);
 
 -- --------------------------------------------------------
 
@@ -514,7 +526,9 @@ CREATE TABLE `report_status_histories` (
 --
 
 INSERT INTO `report_status_histories` (`id`, `report_id`, `status`, `changed_by`, `note`, `created_at`) VALUES
-(14, 7, 'pending', 4, 'Laporan dibuat.', '2026-11-02 22:50:42');
+(14, 7, 'pending', 4, 'Laporan dibuat.', '2026-11-02 22:50:42'),
+(15, 7, 'verified', 1, 'Laporan diverifikasi oleh admin.', '2026-11-10 20:07:31'),
+(16, 7, 'assigned', 1, 'Ditugaskan ke tim: Tim Kebersihan Ilir Barat I.', '2026-11-10 20:08:09');
 
 -- --------------------------------------------------------
 
@@ -570,10 +584,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('35VYOpW7cSkyG8XDgNUv53dQX0mB3BEqkGLtsG2V', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoibmprbDJkMlNrVFNBekxuRDdwMzVBdW9xUnhSTUFCYzljVWl4czdpWCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7czo1OiJyb3V0ZSI7czo0OiJob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793692489),
-('E6ByyZuIEkDgdTdNnCR6x5ANErQUjBhZyVjE13BF', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoidm1jeEQ1blJuNXQ2bnBuU2VJS1RFaVFTM1dpa0ZpTmdHT1lEU0pvTyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czo0OiJob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793692518),
-('Hix4fG7dKLJl8Fm8buGwgUt55BAzl81fY7ukC4hf', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Antigravity/2.28.2 Chrome/152.0.7977.130 Electron/44.5.1 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiRTdpdGxXMDNrbXl0Q0VCWVJlVzYzcFVPeUdvOVlPRVNBU1RPWnU3eCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7czo1OiJyb3V0ZSI7czo0OiJob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793692102),
-('ZZqnrRrjj6XSnzxSbAaTKuorCeDA391B83Lof0nj', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Antigravity/2.28.2 Chrome/152.0.7977.130 Electron/44.5.1 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOGduS1NGb2N2NU44QWZHYVJjb3FrclJ6ZXVqRVg3RFlIOXhYNzRTTiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czo0OiJob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793691181);
+('8WMXcBd9ki7x2yhckEr9f6du2X8dih892MrJmYV1', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiWkEyNXhmalVicFVCWmQ3N0ZtamlMNG9sUHhkYTIyMXd0VUE5ZUU4OSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImFkbWluLmRhc2hib2FyZCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7czoxNzoicGFzc3dvcmRfaGFzaF93ZWIiO3M6NjQ6IjcwYzc5MGQzNGFhZWRkOWViOTljYThiNmU0ZDNlNDMwNzY3ZDcyMzFjZWQ4Y2M2MjEyNDI3MzI4ZWI3ZDYwNDMiO30=', 1794554489),
+('ZUytc7NAFZBeui4GE7wfSyjeUeSVM9YktMnbGJU7', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.146.0 Chrome/150.0.7871.250 Electron/43.8.6 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoialNwRzE3a3d6U01PWUVGTDhzWVNpdjBhNTZlTTQyNWdqUlFoTkNNZCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czo0OiJob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1794550466);
 
 -- --------------------------------------------------------
 
@@ -642,24 +654,26 @@ CREATE TABLE `users` (
   `phone` varchar(255) DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
+  `avatar_path` varchar(255) DEFAULT NULL,
   `two_factor_secret` text DEFAULT NULL,
   `two_factor_recovery_codes` text DEFAULT NULL,
   `two_factor_confirmed_at` timestamp NULL DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `last_login_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `phone`, `email_verified_at`, `password`, `two_factor_secret`, `two_factor_recovery_codes`, `two_factor_confirmed_at`, `is_active`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Administrator Angkut', 'admin@angkut.id', '081200000001', '2026-11-03 04:03:44', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 1, NULL, '2026-11-03 04:03:44', '2026-11-03 04:03:44'),
-(2, 'Budi Santoso', 'petugas1@angkut.id', '081200000002', '2026-11-03 04:03:44', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 1, NULL, '2026-11-03 04:03:44', '2026-11-03 04:03:44'),
-(3, 'Andi Pratama', 'petugas2@angkut.id', '081200000003', '2026-11-03 04:03:44', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 1, NULL, '2026-11-03 04:03:44', '2026-11-03 04:03:44'),
-(4, 'Siti Warga', 'warga@angkut.id', '081200000004', '2026-11-03 04:03:44', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 1, NULL, '2026-11-03 04:03:44', '2026-11-03 04:03:44');
+INSERT INTO `users` (`id`, `name`, `email`, `phone`, `email_verified_at`, `password`, `avatar_path`, `two_factor_secret`, `two_factor_recovery_codes`, `two_factor_confirmed_at`, `is_active`, `remember_token`, `created_at`, `updated_at`, `last_login_at`) VALUES
+(1, 'Administrator Angkut', 'admin@angkut.id', '081200000001', '2026-11-03 04:03:44', '$2y$12$2LNNditRCwuM.r1.bM5vbegvRTr51Hfgrw25trSPPENTga1V/Bdtu', NULL, NULL, NULL, NULL, 1, '1MBy8ZR8ZhYbWb1xui4P9bXbz7sAEiQnHPhU74X2u5NzaxdAFDv8iH7428o9', '2026-11-03 04:03:44', '2026-11-12 23:14:53', '2026-11-12 23:14:53'),
+(2, 'Budi Santoso', 'petugas1@angkut.id', '081200000002', '2026-11-03 04:03:44', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, NULL, 1, NULL, '2026-11-03 04:03:44', '2026-11-03 04:03:44', NULL),
+(3, 'Andi Pratama', 'petugas2@angkut.id', '081200000003', '2026-11-03 04:03:44', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, NULL, 1, NULL, '2026-11-03 04:03:44', '2026-11-03 04:03:44', NULL),
+(4, 'Siti Warga', 'warga@angkut.id', '081200000004', '2026-11-03 04:03:44', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, NULL, 1, NULL, '2026-11-03 04:03:44', '2026-11-03 04:03:44', NULL);
 
 --
 -- Indexes for dumped tables
@@ -906,7 +920,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `activity_log`
 --
 ALTER TABLE `activity_log`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `app_notifications`
@@ -918,7 +932,7 @@ ALTER TABLE `app_notifications`
 -- AUTO_INCREMENT untuk tabel `assignments`
 --
 ALTER TABLE `assignments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `failed_jobs`
@@ -996,7 +1010,7 @@ ALTER TABLE `report_images`
 -- AUTO_INCREMENT untuk tabel `report_status_histories`
 --
 ALTER TABLE `report_status_histories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT untuk tabel `roles`
