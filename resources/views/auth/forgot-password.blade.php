@@ -86,6 +86,9 @@
         html.dark .text-angkut-deep { color: #f1f5f9 !important; }
         html.dark .text-angkut-dark { color: #94a3b8 !important; }
 
+        /* PERBAIKAN: Mengubah warna garis pembatas jadi terang di mode gelap */
+        html.dark .bg-angkut-deep { background-color: #94a3b8 !important; }
+
         /* =========================================================
            6. PERMUKAAN (CARD / INPUT / TOMBOL PUTIH) MODE GELAP
            ========================================================= */
@@ -252,8 +255,8 @@
             <!-- Judul di tengah -->
             <h1 class="text-3xl font-bold text-angkut-deep mb-3 text-center transition-colors">FORGOT PASSWORD</h1>
             
-            <!-- Penjelasan Context Forgot Password -->
-            <p class="text-sm text-angkut-deep/80 text-center mb-6 transition-colors">
+            <!-- Penjelasan Context Forgot Password (SUDAH DIPERBAIKI) -->
+            <p class="text-sm text-angkut-deep opacity-80 text-center mb-6 transition-colors">
                 {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link.') }}
             </p>
 
@@ -289,17 +292,19 @@
                 <a href="{{ route('login') }}" class="text-angkut-orange hover:underline drop-shadow-sm">Log In</a>
             </p>
 
-            <!-- ELEMEN BARU: Teks Tambahan -->
+            <!-- ELEMEN BARU: Teks Tambahan (SUDAH DIPERBAIKI) -->
             <div class="mt-8 text-center px-4">
                 <div class="flex items-center justify-center gap-3 mb-4 opacity-60">
                     <span class="h-[2px] w-10 bg-angkut-deep rounded-full"></span>
                     <span class="text-xs font-bold text-angkut-dark uppercase tracking-widest">Angkut</span>
                     <span class="h-[2px] w-10 bg-angkut-deep rounded-full"></span>
                 </div>
-                <p class="text-[13px] sm:text-sm font-bold text-angkut-deep/90 leading-relaxed italic drop-shadow-sm transition-colors">
+                <!-- Perhatikan class text-angkut-deep dan opacity-90 -->
+                <p class="text-[13px] sm:text-sm font-bold text-angkut-deep opacity-90 leading-relaxed italic drop-shadow-sm transition-colors">
                     "Jangan khawatir, kami akan membantu Anda untuk kembali mengakses akun."
                 </p>
-                <p class="text-[11px] sm:text-xs font-medium text-angkut-deep/70 mt-2 transition-colors">
+                <!-- Perhatikan class text-angkut-deep dan opacity-70 -->
+                <p class="text-[11px] sm:text-xs font-medium text-angkut-deep opacity-70 mt-2 transition-colors">
                     Layanan pengangkutan sampah terpercaya & ramah lingkungan.
                 </p>
             </div>

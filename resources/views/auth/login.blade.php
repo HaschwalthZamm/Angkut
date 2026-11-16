@@ -86,6 +86,11 @@
         html.dark .text-angkut-deep { color: #f1f5f9 !important; }
         html.dark .text-angkut-dark { color: #94a3b8 !important; }
 
+        /* PERBAIKAN: Menangani class dengan opacity (/) di mode gelap */
+        html.dark .text-angkut-deep\/90 { color: rgba(241, 245, 249, .92) !important; }
+        html.dark .text-angkut-deep\/70 { color: rgba(241, 245, 249, .72) !important; }
+        html.dark .bg-angkut-deep { background-color: #94a3b8 !important; }
+
         /* =========================================================
            6. PERMUKAAN (CARD / INPUT / TOMBOL PUTIH) MODE GELAP
            ========================================================= */
@@ -341,7 +346,7 @@
                 </div>
                 <!-- Quote -->
                 <p class="text-[13px] sm:text-sm font-bold text-angkut-deep/90 leading-relaxed italic drop-shadow-sm transition-colors">
-                    "Bersama Angkut, wujudkan lingkungan yang lebih bersih dan bebas sampah."
+                    "Mulai langkahmu hari ini. Bergabunglah bersama Angkut untuk masa depan yang lebih bersih."
                 </p>
                 <!-- Sub-teks -->
                 <p class="text-[11px] sm:text-xs font-medium text-angkut-deep/70 mt-2 transition-colors">
