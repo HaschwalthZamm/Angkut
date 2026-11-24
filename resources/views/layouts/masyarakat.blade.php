@@ -15,15 +15,11 @@
 <body class="font-sans antialiased bg-slate-50 text-angkut-deep overflow-x-hidden">
     <div class="flex h-screen overflow-hidden">
 
-        <aside class="w-64 bg-white border-r-4 border-angkut-deep flex-shrink-0 hidden md:flex flex-col z-20 shadow-[4px_0px_0px_0px_rgba(30,48,17,0.1)]">
+        <aside class="w-64 bg-white border-r-4 border-angkut-deep flex-shrink-0 hidden md:flex flex-col z-40 shadow-[4px_0px_0px_0px_rgba(30,48,17,0.1)]">
             <div class="h-20 flex items-center px-6 border-b-4 border-angkut-deep">
-                <a href="{{ url('/') }}" class="flex items-center gap-2 group">
-                    <div class="w-10 h-10 bg-angkut-light border-3 border-angkut-deep rounded-xl flex items-center justify-center shadow-cartoon-xs group-hover:-translate-y-1 transition-transform">
-                        <svg class="w-6 h-6 text-angkut-dark" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 8h-2V5a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1a3 3 0 0 0 6 0h4a3 3 0 0 0 6 0h1a1 1 0 0 0 1-1v-5a3 3 0 0 0-3-3z"/>
-                        </svg>
-                    </div>
-                    <span class="font-fun text-2xl font-extrabold text-angkut-deep tracking-wider drop-shadow-[1px_1px_0px_#1E3011]">ANGKUT</span>
+                <a href="{{ url('/') }}" class="flex items-center group">
+                    <!-- LOGO BARU -->
+                    <img src="{{ asset('images/logo.webp') }}" alt="Angkut Logo" class="h-10 w-auto object-contain group-hover:-translate-y-1 transition-transform">
                 </a>
             </div>
             
@@ -56,13 +52,12 @@
         </aside>
 
         <div class="flex-1 flex flex-col overflow-hidden relative">
-            <header class="h-20 bg-white border-b-4 border-angkut-deep flex items-center justify-between px-6 z-10">
+            <header class="h-20 bg-white border-b-4 border-angkut-deep flex items-center justify-between px-6 z-50 relative">
                 <div class="flex items-center gap-4">
                     <h1 class="font-fun text-2xl font-extrabold text-angkut-deep uppercase tracking-wide">@yield('header', 'Dashboard')</h1>
                 </div>
                 
                 <div class="flex items-center gap-4">
-                    <!-- KOMPONEN NOTIFIKASI -->
                     <x-notification-bell />
 
                     <div class="text-right hidden sm:block font-fun">

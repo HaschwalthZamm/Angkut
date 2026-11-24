@@ -22,7 +22,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Update last_login_at
         $user = $request->user();
         $user->forceFill(['last_login_at' => now()])->save();
 

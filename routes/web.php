@@ -25,6 +25,9 @@ Route::post('/lapor', [PublicReportController::class, 'store'])
 Route::get('/tracking', [TrackingController::class, 'create'])->name('public.tracking.create');
 Route::post('/tracking', [TrackingController::class, 'track'])->name('public.tracking.track');
 
+// Rute BARU untuk menangani link dari Notifikasi
+Route::get('/laporan/{tracking_code}', [TrackingController::class, 'show'])->name('public.report.show');
+
 /*
 |--------------------------------------------------------------------------
 | Auth routes (Dashboard, Profile, Notifications)
