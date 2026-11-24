@@ -9,7 +9,8 @@
     </button>
 
     <!-- Dropdown Notifikasi -->
-    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border-4 border-angkut-deep rounded-2xl shadow-cartoon z-50 overflow-hidden">
+    <!-- PERBAIKAN: z-50 menjadi z-[100] -->
+    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border-4 border-angkut-deep rounded-2xl shadow-cartoon z-[100] overflow-hidden">
         <div class="p-3 border-b-4 border-angkut-deep bg-angkut-soft flex justify-between items-center">
             <h3 class="font-fun font-bold text-angkut-deep text-sm">Notifikasi</h3>
             <button id="mark-all-read" class="text-xs font-bold text-angkut-medium hover:text-angkut-dark">Tandai Semua Dibaca</button>

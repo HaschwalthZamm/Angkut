@@ -57,22 +57,6 @@ enum ReportStatus: string
         ], true);
     }
 
-    /**
-     * State machine transisi status yang diizinkan.
-     *
-     * Flow normal:
-     *   pending → verified → assigned → on_progress → completed → closed
-     *
-     * Flow tolak:
-     *   pending → rejected
-     *   verified → rejected
-     *
-     * Flow reopen (admin salah tolak):
-     *   rejected → verified
-     *
-     * Flow rollback (petugas tolak tugas, admin unassign):
-     *   assigned → verified
-     */
     public function canTransitionTo(self $next): bool
     {
         return match ($this) {
@@ -86,9 +70,11 @@ enum ReportStatus: string
                 self::Rejected,
             ], true),
 
+            // PERUBAHAN: Assigned sekarang bisa langsung ke Completed
             self::Assigned => in_array($next, [
                 self::OnProgress,
-                self::Verified, // rollback: petugas tolak tugas / admin unassign
+                self::Verified, // rollback
+                self::Completed, // langsung selesai tanpa proses
             ], true),
 
             self::OnProgress => in_array($next, [
@@ -100,7 +86,7 @@ enum ReportStatus: string
             ], true),
 
             self::Rejected => in_array($next, [
-                self::Verified, // reopen oleh admin
+                self::Verified,
             ], true),
 
             self::Closed => false,
