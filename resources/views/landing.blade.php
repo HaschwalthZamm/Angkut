@@ -104,7 +104,7 @@
                 <img src="{{ asset('images/logo.png') }}" 
                      alt="ANGKUT Logo" 
                      decoding="async"
-                     class="h-10 sm:h-14 w-auto object-contain transition-transform group-hover:-translate-y-0.5 group-hover:scale-105">
+                     class="h-9 sm:h-12 w-auto object-contain transition-transform group-hover:-translate-y-0.5 group-hover:scale-105">
             </a>
 
             <!-- NAVIGATION LINKS (urutan = urutan section di halaman) -->
