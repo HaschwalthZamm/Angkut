@@ -1142,10 +1142,8 @@
                 
                 <div class="lg:col-span-4">
                     <div class="flex items-center gap-3 mb-4">
-                        <!-- LOGO FOOTER: Diberi background putih agar logo hijau gelap tetap terlihat jelas di atas bg gelap -->
-                        <div class="bg-white/95 p-1.5 sm:p-2 rounded-xl shadow-cartoon-xs inline-flex items-center justify-center">
-                            <img src="{{ asset('images/logo.png') }}" alt="ANGKUT Logo" loading="lazy" decoding="async" class="h-10 sm:h-12 w-auto object-contain">
-                        </div>
+                        <!-- LOGO FOOTER: Latar belakang dihapus, warna logo dibuat terang (putih) agar menyatu dengan footer gelap -->
+                        <img src="{{ asset('images/logo.png') }}" alt="ANGKUT Logo" loading="lazy" decoding="async" class="h-10 sm:h-12 w-auto object-contain drop-shadow-md" style="filter: brightness(0) invert(1);">
                     </div>
                     <p class="text-gray-300 text-sm leading-relaxed mb-6 font-medium">
                         Sistem terpadu pelayanan pengaduan, edukasi pemilahan, dan pengangkutan sampah mandiri yang menghubungkan warga Palembang dengan posko kebersihan di 18 kecamatan.
