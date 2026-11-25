@@ -1115,28 +1115,6 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
-            <!-- TOP CTA BANNER INSIDE FOOTER -->
-            <div class="bg-gradient-to-r from-angkut-dark to-angkut-medium border-4 border-white/90 rounded-3xl p-6 sm:p-10 mb-16 shadow-cartoon-xl flex flex-col lg:flex-row items-center justify-between gap-6">
-                <div>
-                    <span class="inline-flex items-center gap-2 bg-angkut-pop text-angkut-deep font-fun text-xs font-black uppercase px-3.5 py-1 rounded-full border-2 border-angkut-deep shadow-cartoon-xs mb-3">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2zm0-6h2v4h-2z"/></svg>
-                        Peduli Lingkungan Sejak Dini
-                    </span>
-                    <h3 class="font-fun text-2xl sm:text-4xl font-extrabold text-white tracking-wide uppercase drop-shadow-[2px_2px_0px_#1E3011]">
-                        Mulai Pilah Sampah Dari Rumahmu Sekarang!
-                    </h3>
-                    <p class="mt-2 text-angkut-cream text-sm sm:text-base max-w-xl font-medium">
-                        Satu langkah kecil memilah sampah organik, anorganik, dan B3 berdampak besar bagi kelestarian Kota Palembang.
-                    </p>
-                </div>
-                <div class="shrink-0 flex items-center gap-3">
-                    <a href="#pemilahan" class="inline-flex items-center gap-2 bg-angkut-pop hover:bg-yellow-400 text-angkut-deep font-fun text-base font-extrabold px-6 py-3.5 border-3 border-angkut-deep rounded-2xl shadow-cartoon transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 whitespace-nowrap">
-                        <span>Lihat Panduan Warna</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
-            </div>
-
             <!-- MAIN FOOTER CONTENT (4 COLUMNS) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/15">
                 
